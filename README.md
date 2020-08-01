@@ -8,7 +8,8 @@ Much time I nearly lost temper beacause the useless experience of debugging the 
 Q: how to open this?
 
 host a server of MySQL with port 3306
-host tomcat as server for jsp application, my tomcat server port number is 8888
+host tomcat as server for jsp application,
+(my tomcat server port number is 8888)
 
 url: localhost:8888/CodeTest/
 
@@ -16,4 +17,4 @@ the DBManager.java can vary the collection of MySQL database, to suit your need
 the written ID : 'root'
 the password (none): ''
 
-Welcome provide any comment
+Welcome to provide any comment
