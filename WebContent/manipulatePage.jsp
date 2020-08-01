@@ -105,7 +105,7 @@
 		<span id="SumCostNoTax"></span>
 		<select id="areaSelect" onChange='roundUp0p05()'>
 			<option value="NotYet" >Please Select</option>
-			<option value="9.75" id="Ca">California (CA 9.75)</option>
+			<option value="9.75" id="CA">California (CA 9.75)</option>
 			<option value="8.875" id="NY">New York (NY 8.875)</option>
 			<option value="1.13" id="MK">Mong Kok(1.13)</option>
 			<option value="1.16" id="YMT">Yau Ma Tei(1.16)</option>
@@ -115,7 +115,8 @@
 		<br>
 		<button onClick="AfterTaxSumCost()"> Calculate Sum Cost</button>
 		<span><br>In California (CA), sales tax rate food is exempt, 
-		<br>and In New York (NY), sales tax rate is 8.875%, food and clothing are exempt. Other options' sales tax includes all category</span>
+		<br>and In New York (NY), sales tax rate is 8.875%, food and clothing are exempt.
+		<br>Other options' sales tax includes all category</span>
 		<br>
 		
 	</table>
@@ -158,7 +159,7 @@
 				 subtotalCost += Number($('#allC').text());
 				 categoryArrary.push(selectedOptionClass);
 				 priceArrary.push(Number($('#allC').text()));
-				$('#ShoppingItems').append("<li class="+selectedOptionClass+">"+$('#'+selectedOptionId).text()+" "+$('#oneC').val()+" * "+$('#quantity').val()+ " , $: "+$('#allC').text()+"</li>");
+				$('#ShoppingItems').append("<li class="+selectedOptionClass+">"+$('#'+selectedOptionId).text()+" "+$('#oneC').val()+" * "+$('#quantity').val()+ " , $"+$('#allC').text()+"</li>");
 				$('#subtotalCost').text(subtotalCost);
 			}
 		}
@@ -171,32 +172,43 @@
 	
 		var areaSelector = document.getElementById('areaSelect');
 		var CorrectTax;
+		
 		function AfterTaxSumCost(){
-			CorrectTax = Number($('#taxUsed').text());
-			if(areaSelector[areaSelector.selectedIndex].id == "Ca"){
-				$('.food').css('color','green');
-				for(var i=1;i<categoryArrary.length+1;i++){
-					if(categoryArrary[i-1] != 'food')
+			if( ($('#areaSelect').val() != "NotYet") && (priceArrary.length != 0) ){
+		
+				CorrectTax = Number($('#taxUsed').text());
+				if(areaSelector[areaSelector.selectedIndex].id == "CA"){
+					$('.food').css('color','green');
+					for(var i=1;i<categoryArrary.length+1;i++){
+						if(categoryArrary[i-1] != 'food'){
+							document.getElementsByTagName('li')[i].innerHTML += ", with "+ CorrectTax +"% tax ,  $"+ ( ((CorrectTax/100)) * priceArrary[i-1]).toFixed(2);
+							priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
+						}else{
+							document.getElementsByTagName('li')[i].innerHTML += ", with sales tax exemption."
+						}
+					}
+				}
+				else if(areaSelector[areaSelector.selectedIndex].id == "NY"){
+					$('.food').css('color','green');$('.clothing').css('color','green');
+					for(var i=1;i<categoryArrary.length+1;i++){
+						if(categoryArrary[i-1] != 'food' && categoryArrary[i-1] != 'clothing'){
+							document.getElementsByTagName('li')[i].innerHTML += ", with "+ CorrectTax +"% tax ,  $"+ ( ((CorrectTax/100)) * priceArrary[i-1]).toFixed(2);
+							priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
+						}else{
+							document.getElementsByTagName('li')[i].innerHTML += ", with sales tax exemption."
+						}
+					}
+				}else{
+					for(var i=1;i<categoryArrary.length+1;i++){
 						document.getElementsByTagName('li')[i].innerHTML += ", with "+ CorrectTax +"% tax ,  $"+ ( ((CorrectTax/100)) * priceArrary[i-1]).toFixed(2);
-					priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
+						priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
+					}
 				}
-			}
-			else if(areaSelector[areaSelector.selectedIndex].id == "NY"){
-				$('.food').css('color','green');$('.clothing').css('color','green');
-				for(var i=1;i<categoryArrary.length+1;i++){
-					if(categoryArrary[i-1] != 'food' && categoryArrary[i-1] != 'clothing')
-						document.getElementsByTagName('li')[i].innerHTML += ", with "+ CorrectTax +"% tax ,  $"+ ( ((CorrectTax/100)) * priceArrary[i-1]).toFixed(2);
-					priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
-				}
-			}else{
-				for(var i=1;i<categoryArrary.length+1;i++){
-					document.getElementsByTagName('li')[i].innerHTML += ", with "+ CorrectTax +"% tax ,  $"+ ( ((CorrectTax/100)) * priceArrary[i-1]).toFixed(2);
-					priceArrary[i-1] = Number(( (1+ (CorrectTax/100)) * priceArrary[i-1]).toFixed(2));
-				}
-			}
-	
-			$("#totalCost").text(priceArrary.reduce(myFunc));
-			$("#taxCost").text( ((priceArrary.reduce(myFunc)) - subtotalCost));
+		
+				$("#totalCost").text("$"+priceArrary.reduce(myFunc));
+				$("#taxCost").text( "$"+((priceArrary.reduce(myFunc)) - subtotalCost).toFixed(2));
+			}else
+				alert('please validate the shopping cart data');
 			
 		}
 		
